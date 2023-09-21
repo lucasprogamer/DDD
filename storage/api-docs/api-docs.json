@@ -1,0 +1,648 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Farmacas",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Authenticate"
+                ],
+                "summary": "Realiza o login do usuário",
+                "description": "Este endpoint permite que um usuário faça o login fornecendo um email e uma senha válidos.",
+                "operationId": "8dcb70df1020986038d098cc08d05dae",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "Email do usuário",
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "description": "Senha do usuário",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login bem-sucedido. Retorna um token de autenticação.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "Token de acesso",
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "description": "Tipo de token (Bearer)",
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "description": "Tempo de expiração do token em segundos",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas. Falha na autenticação."
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Authenticate"
+                ],
+                "summary": "Registra um novo usuário",
+                "description": "Este endpoint permite que um novo usuário seja registrado fornecendo informações necessárias, como nome, email e senha.",
+                "operationId": "8a56853624e025573120a09a4c75d468",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Nome do usuário",
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "email": {
+                                        "description": "Email do usuário",
+                                        "type": "string",
+                                        "format": "email",
+                                        "maxLength": 255
+                                    },
+                                    "password": {
+                                        "description": "Senha do usuário",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "minLength": 6
+                                    },
+                                    "password_confirmation": {
+                                        "description": "Confirmação da senha do usuário",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuário registrado com sucesso. Retorna um token de autenticação.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "Token de acesso",
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "description": "Tipo de token (Bearer)",
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "description": "Tempo de expiração do token em segundos",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação. Verifique os campos fornecidos."
+                    }
+                }
+            }
+        },
+        "/api/auth/schedules": {
+            "get": {
+                "tags": [
+                    "Schedule"
+                ],
+                "summary": "Recupera dados de agendamento",
+                "description": "Este endpoint permite recuperar dados de agendamento com base em filtros opcionais.",
+                "operationId": "f41385d00ff6915c5dfbd274a8af0aff",
+                "parameters": [
+                    {
+                        "name": "starts_at",
+                        "in": "query",
+                        "description": "Data de início para filtrar os agendamentos (opcional).",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "ends_at",
+                        "in": "query",
+                        "description": "Data de término para filtrar os agendamentos (opcional).",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Título para filtrar os agendamentos (opcional).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dados de agendamento recuperados com sucesso."
+                    },
+                    "401": {
+                        "description": "Não autorizado. O usuário não está autenticado."
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Schedule"
+                ],
+                "summary": "Cria um novo agendamento",
+                "description": "Este endpoint permite criar um novo agendamento com os campos especificados.",
+                "operationId": "c786c50f8f6b7413786857d8654f3f66",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "Título do agendamento",
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "description": "Descrição do agendamento",
+                                        "type": "string"
+                                    },
+                                    "user_id": {
+                                        "description": "ID do usuário associado ao agendamento",
+                                        "type": "integer"
+                                    },
+                                    "starts_at": {
+                                        "description": "Data e hora de início do agendamento (Formato: YYYY-MM-DD HH:MM:SS)",
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "ends_at": {
+                                        "description": "Data e hora de término do agendamento (Formato: YYYY-MM-DD HH:MM:SS) - Opcional",
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    },
+                                    "status": {
+                                        "description": "Status do agendamento",
+                                        "type": "string"
+                                    },
+                                    "created_at": {
+                                        "description": "Data e hora de criação do agendamento (Formato: YYYY-MM-DD HH:MM:SS)",
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "updated_at": {
+                                        "description": "Data e hora de atualização do agendamento (Formato: YYYY-MM-DD HH:MM:SS)",
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "id": {
+                                        "description": "ID do agendamento criado",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Agendamento criado com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "title": {
+                                            "description": "Título do agendamento",
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "description": "Descrição do agendamento",
+                                            "type": "string"
+                                        },
+                                        "user_id": {
+                                            "description": "ID do usuário associado ao agendamento",
+                                            "type": "integer"
+                                        },
+                                        "starts_at": {
+                                            "description": "Data e hora de início do agendamento (Formato: YYYY-MM-DD HH:MM:SS)",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "ends_at": {
+                                            "description": "Data e hora de término do agendamento (Formato: YYYY-MM-DD HH:MM:SS) - Opcional",
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "nullable": true
+                                        },
+                                        "status": {
+                                            "description": "Status do agendamento",
+                                            "type": "string"
+                                        },
+                                        "created_at": {
+                                            "description": "Data e hora de criação do agendamento (Formato: YYYY-MM-DD HH:MM:SS)",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "description": "Data e hora de atualização do agendamento (Formato: YYYY-MM-DD HH:MM:SS)",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "id": {
+                                            "description": "ID do agendamento criado",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação. Verifique os campos fornecidos."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/schedules/{schedule}": {
+            "get": {
+                "tags": [
+                    "Schedule"
+                ],
+                "summary": "Recupera detalhes de um agendamento",
+                "description": "Este endpoint permite recuperar detalhes de um agendamento específico.",
+                "operationId": "5628f03eb3fdb73437b1a9e572008a8b",
+                "parameters": [
+                    {
+                        "name": "schedule",
+                        "in": "path",
+                        "description": "ID do agendamento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes do agendamento recuperados com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "ID do agendamento",
+                                            "type": "integer"
+                                        },
+                                        "title": {
+                                            "description": "Título do agendamento",
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "description": "Descrição do agendamento",
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "description": "Status do agendamento",
+                                            "type": "string"
+                                        },
+                                        "user_id": {
+                                            "description": "ID do usuário associado ao agendamento",
+                                            "type": "integer"
+                                        },
+                                        "starts_at": {
+                                            "description": "Data e hora de início do agendamento (Formato: YYYY-MM-DD HH:MM:SS)",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "ends_at": {
+                                            "description": "Data e hora de término do agendamento (Formato: YYYY-MM-DD HH:MM:SS) - Opcional",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "finished_at": {
+                                            "description": "Data e hora de finalização do agendamento (Formato: YYYY-MM-DD HH:MM:SS) - Opcional",
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "nullable": true
+                                        },
+                                        "created_at": {
+                                            "description": "Data e hora de criação do agendamento (Formato: YYYY-MM-DD HH:MM:SS)",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "description": "Data e hora de atualização do agendamento (Formato: YYYY-MM-DD HH:MM:SS)",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "user": {
+                                            "description": "Detalhes do usuário associado ao agendamento",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "ID do usuário",
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "description": "Nome do usuário",
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "description": "Email do usuário",
+                                                    "type": "string"
+                                                },
+                                                "email_verified_at": {
+                                                    "description": "Data e hora de verificação do email do usuário - Opcional",
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "description": "Data e hora de criação do usuário (Formato: YYYY-MM-DD HH:MM:SS)",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Data e hora de atualização do usuário (Formato: YYYY-MM-DD HH:MM:SS)",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Agendamento não encontrado."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Schedule"
+                ],
+                "summary": "Atualiza um agendamento existente",
+                "description": "Este endpoint permite atualizar um agendamento existente com os campos especificados.",
+                "operationId": "53c68d939af92ccc80c97de697ae8ffa",
+                "parameters": [
+                    {
+                        "name": "schedule",
+                        "in": "path",
+                        "description": "ID do agendamento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "ID do agendamento a ser atualizado",
+                                        "type": "integer"
+                                    },
+                                    "title": {
+                                        "description": "Título do agendamento",
+                                        "type": "string",
+                                        "maxLength": 40
+                                    },
+                                    "description": {
+                                        "description": "Descrição do agendamento",
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "starts_at": {
+                                        "description": "Data e hora de início do agendamento (Formato: YYYY-MM-DD HH:MM:SS) - Opcional",
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "ends_at": {
+                                        "description": "Data e hora de término do agendamento (Formato: YYYY-MM-DD HH:MM:SS) - Opcional",
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "status": {
+                                        "description": "Status do agendamento",
+                                        "type": "string"
+                                    },
+                                    "user_id": {
+                                        "description": "ID do usuário associado ao agendamento",
+                                        "type": "integer"
+                                    },
+                                    "finished_at": {
+                                        "description": "Data e hora de finalização do agendamento (Formato: YYYY-MM-DD HH:MM:SS) - Opcional",
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    },
+                                    "created_at": {
+                                        "description": "Data e hora de criação do agendamento (Formato: YYYY-MM-DD HH:MM:SS)",
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "updated_at": {
+                                        "description": "Data e hora de atualização do agendamento (Formato: YYYY-MM-DD HH:MM:SS)",
+                                        "type": "string",
+                                        "format": "date-time"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Agendamento atualizado com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "ID do agendamento atualizado",
+                                            "type": "integer"
+                                        },
+                                        "title": {
+                                            "description": "Título do agendamento",
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "description": "Descrição do agendamento",
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "description": "Status do agendamento",
+                                            "type": "string"
+                                        },
+                                        "user_id": {
+                                            "description": "ID do usuário associado ao agendamento",
+                                            "type": "integer"
+                                        },
+                                        "starts_at": {
+                                            "description": "Data e hora de início do agendamento (Formato: YYYY-MM-DD HH:MM:SS) - Opcional",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "ends_at": {
+                                            "description": "Data e hora de término do agendamento (Formato: YYYY-MM-DD HH:MM:SS) - Opcional",
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "nullable": true
+                                        },
+                                        "finished_at": {
+                                            "description": "Data e hora de finalização do agendamento (Formato: YYYY-MM-DD HH:MM:SS) - Opcional",
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "nullable": true
+                                        },
+                                        "created_at": {
+                                            "description": "Data e hora de criação do agendamento (Formato: YYYY-MM-DD HH:MM:SS)",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "description": "Data e hora de atualização do agendamento (Formato: YYYY-MM-DD HH:MM:SS)",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Agendamento não encontrado."
+                    },
+                    "422": {
+                        "description": "Erro de validação. Verifique os campos fornecidos."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer ": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Schedule"
+                ],
+                "summary": "Remove um agendamento existente",
+                "description": "Este endpoint permite remover um agendamento existente.",
+                "operationId": "a59937851f59879e5f423c3d09e322e7",
+                "parameters": [
+                    {
+                        "name": "schedule",
+                        "in": "path",
+                        "description": "ID do agendamento a ser removido",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Agendamento removido com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Agendamento removido com sucesso",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Agendamento não encontrado."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer ": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authenticate",
+            "description": "Endpoints para authenticacao."
+        },
+        {
+            "name": "Schedule",
+            "description": "Endpoints relacionados ao agendamento."
+        }
+    ]
+}
