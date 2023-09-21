@@ -73,7 +73,7 @@ class ScheduleController extends Controller
     {
         $userId = Auth::user()->id;
         if (!$userId) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException;
         }
         $starts = request()->query('starts_at') ? new Carbon(request()->query('starts_at')) : null;
         $ends = request()->query('ends_at') ? new Carbon(request()->query('ends_at')) : null;

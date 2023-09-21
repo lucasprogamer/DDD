@@ -24,7 +24,7 @@ class CreateScheduleUseCaseTest extends TestCase
 
         $this->scheduleRepository = Mockery::mock(ScheduleRepositoryInterface::class);
         $this->checkIfScheduleExists = new CheckIfScheduleExistsUseCase($this->scheduleRepository);
-        $this->checkWeekendUseCase = new CheckWeekendUseCase();
+        $this->checkWeekendUseCase = new CheckWeekendUseCase;
     }
 
     public function tearDown(): void
