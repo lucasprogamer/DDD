@@ -1,11 +1,14 @@
 <?php
 
+namespace Tests\Unit\Domain\Schedule\UseCases;
+
 use Tests\TestCase;
 use App\Domain\Schedule\Data\SearchScheduleDto;
 use App\Domain\Schedule\Interfaces\ScheduleRepositoryInterface;
 use App\Domain\Schedule\Models\Schedule;
 use App\Domain\Schedule\UseCases\GetScheduleUseCase;
 use Illuminate\Database\Eloquent\Collection;
+use Mockery;
 
 class GetScheduleUseCaseTest extends TestCase
 {
